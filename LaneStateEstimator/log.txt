@@ -1,0 +1,304 @@
+偏航角大于零，轨道往右平移，小于零，往左平移
+
+俯仰角大于零，轨道看起来更窄，小于零，更宽
+
+横向偏移大于零，轨道往右偏斜，小于零，往左偏斜
+
+水平曲率大于零，轨道往右弯曲，小于零，往左弯曲
+
+垂直曲率大于零，轨道往上弯曲，小于零，往下弯曲
+
+
+model.phi1 = 0.009;		
+model.phi2 = -0.024;	
+model.y0   = 0;			
+model.b    = 1.435;		
+model.ch0  = 0;			
+model.ch1  = 0;			
+model.cv0  = 0.000005;	
+
+状态模型中，除了轨道宽度，其他参数均为零时，最近处轨道宽度=196pix
+
+实际宽度381
+442
+
+LB = [-0.05, pitch-0.01,-0.1,-0.0005,-0.00000000001,-0.0001];
+UB = [ 0.05, pitch+0.01, 0.1, 0.0005, 0.00000000001, 0.0001];
+
+self->s0.phi1 = 0.007f;
+self->s0.phi2 = -0.023f;
+self->s0.y0 = 0;
+self->s0.b = 1.435f;
+self->s0.ch0 = 0;
+self->s0.ch1 = 0;
+self->s0.cv0 = -1.2e-6f;
+	
+单精度小数点后6到7位有效
+双精度小数点后15到16位有效
+
+测量噪声协方差=k*diag(sigma^2)，取值过大，测量值对系统的影响将很小，滤波器的反馈将很小
+
+初始状态及其误差协方差后验估计，取值过小，卡尔曼增益将很小，estimator将过度依赖模型预测，测量值对estimator的影响将很小，
+滤波器将学习到错误的状态或者干脆发散
+
+
+实际值（状态后验估计）和预测值之间的差，应小于实际值和测量值之间的差
+
+F:\dataset\2017-12-08\scene1
+00000204.dat
+"laneInitState":
+{
+	"yawAngle":-0.002614245867387,
+	"pitchAngle":-0.029705636131704,
+	"lateralOffset":0.000178934465113,
+	"laneWidth":1.435,
+	"horizontalCurvature":0.000001534289460,
+	"alterationOfHorizontalCurvature":-0.000000000009960,
+	"verticalCurvature":-0.000000006562598
+},
+俯瞰图俯仰角：-0.541052068118242f
+
+F:\dataset\2018-05-12\
+00000744.dat
+"laneInitState":
+{
+	"yawAngle":0.006000000000000,
+	"pitchAngle":-0.022399990000000,
+	"lateralOffset":0.038093293730613 ,
+	"laneWidth":1.435,
+	"horizontalCurvature":0,
+	"alterationOfHorizontalCurvature":0,
+	"verticalCurvature":0
+},
+俯瞰图俯仰角：-0.645771823237902f
+
+
+F:\dataset\2017-12-08\scene3
+00000320.dat
+"laneInitState":
+{
+	"yawAngle":-0.001000000000000,
+	"pitchAngle":0,
+	"lateralOffset":0,
+	"laneWidth":1.435,
+	"horizontalCurvature":0,
+	"alterationOfHorizontalCurvature":0,
+	"verticalCurvature":1.355252715606881e-20
+},
+
+
+-width 640 -height 480 -path "F:\dataset\00000205.dat" -pnum 500
+
+
+ = {width, height, 17, 150, 58.823529411764700f, 58.823529411764700f,
+		8.823529411764706e+03f, 8.823529411764706e+03f, 320, 240, 17.45f,
+		4.156638013371538f, 3.117478510028653f, 1.75f}
+				
+岔道--------------------------------------------------------------------
+文件：F:\dataset\2017-12-08\00000204.zip
+时间段：60-260
+
+弯道--------------------------------------------------------------------
+文件：F:\dataset\2017-12-08\00000205.zip
+时间段：0-400
+F:\dataset\2017-12-08\00000210.zip
+
+直道--------------------------------------------------------------------
+文件：F:\dataset\2017-12-08\00000206.zip
+时间段：0-499
+
+
+cv::Mat noise(tdreg[0].height, tdreg[0].width, CV_32FC1);
+randn(noise, cv::Scalar::all(0), cv::Scalar::all(1000));
+srand((int)time(NULL));
+int randidx = rand() % (ntdr - 2);
+
+if (i == randidx) {
+	nregion = nregion + noise;
+}
+
+变道的处理完成！
+
+
+
+限界范围：识别出的行人或异物处钢轨线路中心为起点宽度为4880mm，即两侧各2440mm（两股钢轨直线轨距标准为1435mm）。
+
+
+// // Calculate x position of center line.
+// int sumcx = 0;
+// int counter = 0;
+// int height = len;
+// TrackNode *leftrack = bevtracklist->head;
+// while (leftrack && rightrack && 0 == leftrack->track.side) {
+// 	if (leftrack->track.py >= 0 && leftrack->track.py < height) {
+// 		int cxi = (int)((leftrack->track.px + rightrack->track.px) / 2.0f + 0.5f);
+// 		cx[leftrack->track.py] = cxi;
+// 		sumcx += cxi;
+// 		counter++;
+// 	}
+// 	
+// 	leftrack = leftrack->next;
+// 	rightrack = rightrack->next;	
+// }
+// 
+// int rx = (int)(sumcx / (float)counter + 1e-8f);
+// 
+// // Calculate horizontal offset of track.
+// leftrack = bevtracklist->head;
+// while (leftrack && 0 == leftrack->track.side) {
+// 	if (leftrack->track.py >= 0 && leftrack->track.py < height) {
+// 		offset[leftrack->track.py] = cx[leftrack->track.py] - rx;
+// 	}
+// 	
+// 	leftrack = leftrack->next;
+// }	
+
+
+添加异物警戒线的计算，透视投影变换后的异物警戒线，及对应的监测区域设置
+
+卡尔曼滤波参考：
+E:\Workspace\Project\trunk\opencv-3.2.0\modules\video\test\test_kalman.cpp
+E:\Workspace\Project\trunk\opencv-3.2.0\modules\video\src\kalman.cpp
+E:\Workspace\Project\trunk\opencv-3.2.0\modules\video\include\opencv2\video\tracking.hpp
+
+
+// Put image in ring buffer of railway tracker.
+	int counter = 1000;
+	while (counter--) {
+		if (!RailwayTrackerPutData(self->tracker, data, len)) {
+			break;
+		}
+		Sleep(1);
+	}
+	
+	if (-1 == counter) {
+		fprintf(stderr, "RailwayTrackerPutData fail[%s:%d].\n", __FILE__, __LINE__);
+		return -1;
+	}
+	
+	// Put image in ring buffer of obstacle detector.
+	counter = 1000;
+	while (counter--) {
+		if (!ObstacleDetectorPutImage(self->odetector, data, len)) {
+			break;
+		}
+		Sleep(1);
+	}
+	
+	if (-1 == counter) {
+		fprintf(stderr, "ObstacleDetectorPutImage fail[%s:%d].\n", __FILE__, __LINE__);
+		return -1;
+	}
+	
+	// Put image in ring buffer of pedestrian detector.
+	// counter = 1000;
+	// while (counter--) {
+	// 	if (!PedestrianDetectorPutImage(self->pdetector, data, len)) {
+	// 		break;
+	// 	}
+	// 	Sleep(1);
+	// }
+	// 
+	// if (-1 == counter) {
+	// 	fprintf(stderr, "PedestrianDetectorPutImage fail[%s:%d].\n", __FILE__, __LINE__);
+	// 	return -1;
+	// }
+
+卡尔曼滤波器参数备份：
+"processNoiseCov":[1e-4,   0,   0,   0,    0,    0,    0,
+	                      0,1e-4,   0,   0,    0,    0,    0,
+						  0,   0,1e-4,   0,    0,    0,    0,
+						  0,   0,   0,   0,    0,    0,    0,
+						  0,   0,   0,   0,1e-08,    0,    0,
+						  0,   0,   0,   0,    0,1e-20,    0,
+						  0,   0,   0,   0,    0,    0,1e-20],
+"measurementNoiseStdev":1,
+"errorCovPost":[1e-4,   0,   0,   0,    0,    0,    0,
+				   0,1e-4,   0,   0,    0,    0,    0,
+				   0,   0,1e-4,   0,    0,    0,    0,
+				   0,   0,   0,   0,    0,    0,    0,
+				   0,   0,   0,   0, 1e-6,    0,    0,
+				   0,   0,   0,   0,    0, 1e-20,    0,
+				   0,   0,   0,   0,    0,    0, 1e-20],
+
+				   
+				   
+				   
+{
+	"maxScanInter":24,
+	"maxScanRadius":64,
+	"scaleInter":0.92,
+	"scaleRadius":0.8,
+	"goodFitThresh":10,
+	"pedWarnRegionWidth":4.88,
+	"obsWarnRegionWidth":2.435,
+	"laneInitState":
+	{
+		"yawAngle":0.006000000000000,
+		"pitchAngle":-0.022399990000000,
+		"lateralOffset":0.038093293730613 ,
+		"laneWidth":1.435,
+		"horizontalCurvature":0,
+		"alterationOfHorizontalCurvature":0,
+		"verticalCurvature":0
+	},
+	"processNoiseCov":[1e-4,   0,   0,   0,    0,    0,    0,
+	                      0,1e-4,   0,   0,    0,    0,    0,
+						  0,   0,1e-4,   0,    0,    0,    0,
+						  0,   0,   0,   0,    0,    0,    0,
+						  0,   0,   0,   0, 1e-6,    0,    0,
+						  0,   0,   0,   0,    0, 1e-8,    0,
+						  0,   0,   0,   0,    0,    0, 1e-6],
+	"measurementNoiseStdev":1,
+	"errorCovPost":[1e-4,   0,   0,   0,    0,    0,    0,
+	                   0,1e-4,   0,   0,    0,    0,    0,
+					   0,   0,1e-4,   0,    0,    0,    0,
+					   0,   0,   0,   0,    0,    0,    0,
+					   0,   0,   0,   0, 1e-6,    0,    0,
+					   0,   0,   0,   0,    0, 1e-8,    0,
+					   0,   0,   0,   0,    0,    0, 1e-6],
+	"widthOfContinuityDetectRegion":0,
+	"heightOfContinuityDetectRegion":16,
+	"widthOfTextureDetectRegion":0,
+	"heightOfTextureDetectRegion":16,
+	"diffBrightThresh":4,
+	"diffVarThresh":6400,
+	"corrThresh":0.4
+}
+
+
+
+拟合误差的阈值设得偏低，
+
+
+http://www.mirrorservice.org/sites/sourceware.org/pub/pthreads-win32/
+
+
+
+F:\dataset\2018-05-12\00000722.zip是S弯道
+
+
+F:\dataset\2017-12-08\00000320.zip场景配置
+"numScanLineInter":20,
+"maxSumScanLineInter":225,
+"maxScanLineRadius":32,
+
+
+
+
+F:\dataset\2018-03-07
+00000530.dat
+"laneInitState":
+{
+	"yawAngle":-0.003000000000000,
+	"pitchAngle":0.007700010000000,
+	"lateralOffset":0,
+	"laneWidth":1.435,
+	"horizontalCurvature":0,
+	"alterationOfHorizontalCurvature":0,
+	"verticalCurvature":1.355252715606881e-20
+},
+
+
+要销毁算法模块，首先停止数据输入，等待一定时间，让算法模块有足够时间消耗已经输入的数据，并且让调用者将算法模块内
+缓存的检测结果统统取出并释放其内存资源，然后再停止算法模块，最后销毁算法模块

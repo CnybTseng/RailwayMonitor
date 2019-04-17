@@ -1,0 +1,7 @@
+model.phi1	-0.00700000
+model.phi2	-0.02169999
+model.y0	0.10000000
+model.b		1.43500000
+model.ch0	0.00000000
+model.ch1	0.00000000
+model.cv0	0.00000000

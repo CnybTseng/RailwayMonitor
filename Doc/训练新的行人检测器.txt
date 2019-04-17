@@ -1,0 +1,133 @@
+
+
+1.新的检测器配置
+
+	窗口（window）大小：18x36
+	细胞（cell）大小：6x6
+	块（block）大小：2x2
+	特征向量长度：(3-1)x(6-1)x(4x9)=360
+	
+2.数据集规范化
+	
+	行人数据集LSIFIR中样本分辨率为32x64，为了避免border artifacts，样本图像边界有一定非人区域
+		
+2.1 直接缩放	
+	32x64=>18x36
+	Optimization finished (1433 misclassified, maxdiff=0.00096).
+	Runtime in cpu-seconds: 28.12
+	Number of SV: 6537 (including 6365 at upper bound)
+	L1 loss: loss=4232.02303
+	Norm of weight vector: |w|=10.53166
+	Norm of longest example vector: |x|=3.12372
+	Estimated VCdim of classifier: VCdim<=1083.27856
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.09
+	XiAlpha-estimate of the error: error<=5.69% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>81.77% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>87.52% (rho=1.00,depth=0)
+	Number of kernel evaluations: 667516
+	Writing model file...done
+	
+	Accuracy on test set: 97.46% (27283 correct, 711 incorrect, 27994 total)
+	Precision/recall on test set: 96.38%/91.47%
+	
+2.2 先裁剪，再缩放
+2.2.1
+
+	win:32x64=>24x56=>18x36
+	Optimization finished (1471 misclassified, maxdiff=0.00098).
+	Runtime in cpu-seconds: 30.79
+	Number of SV: 6769 (including 6564 at upper bound)
+	L1 loss: loss=4505.85155
+	Norm of weight vector: |w|=10.40171
+	Norm of longest example vector: |x|=3.12372
+	Estimated VCdim of classifier: VCdim<=1056.14668
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.09
+	XiAlpha-estimate of the error: error<=5.91% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>80.42% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>87.56% (rho=1.00,depth=0)
+	Number of kernel evaluations: 672942
+	
+	Accuracy on test set: 97.00% (27155 correct, 839 incorrect, 27994 total)
+	Precision/recall on test set: 96.33%/89.28%
+	
+2.2.2
+
+	win:32x64=>28x60=>18x36
+	Optimization finished (1601 misclassified, maxdiff=0.00095).
+	Runtime in cpu-seconds: 32.66
+	Number of SV: 6955 (including 6767 at upper bound)
+	L1 loss: loss=4629.65349
+	Norm of weight vector: |w|=10.56176
+	Norm of longest example vector: |x|=3.12344
+	Estimated VCdim of classifier: VCdim<=1089.27259
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.09
+	XiAlpha-estimate of the error: error<=6.31% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>79.83% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>86.04% (rho=1.00,depth=0)
+	Number of kernel evaluations: 665965
+	
+	Accuracy on test set: 97.22% (27215 correct, 779 incorrect, 27994 total)
+	Precision/recall on test set: 96.16%/90.51%
+	
+3. 原来的设置
+
+	win:32x64=>16x32,cell:4x4
+	Optimization finished (429 misclassified, maxdiff=0.00100).
+	Runtime in cpu-seconds: 20.22
+	Number of SV: 3045 (including 2728 at upper bound)
+	L1 loss: loss=1510.34948
+	Norm of weight vector: |w|=8.28613
+	Norm of longest example vector: |x|=4.52243
+	Estimated VCdim of classifier: VCdim<=1405.25864
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.17
+	XiAlpha-estimate of the error: error<=5.10% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>86.35% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>86.80% (rho=1.00,depth=0)
+	Number of kernel evaluations: 642795
+	
+	Accuracy on test set: 99.02% (27721 correct, 273 incorrect, 27994 total)
+	Precision/recall on test set: 98.73%/96.65%
+	
+	
+	
+	添加hard sample之后
+	Optimization finished (759 misclassified, maxdiff=0.00097).
+	Runtime in cpu-seconds: 34.54
+	Number of SV: 4353 (including 4011 at upper bound)
+	L1 loss: loss=2480.54169
+	Norm of weight vector: |w|=9.23855
+	Norm of longest example vector: |x|=4.52449
+	Estimated VCdim of classifier: VCdim<=1748.21623
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.18
+	XiAlpha-estimate of the error: error<=6.72% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>80.02% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>80.49% (rho=1.00,depth=0)
+	Number of kernel evaluations: 736074
+	
+	Accuracy on test set: 98.66% (27619 correct, 375 incorrect, 27994 total)
+	Precision/recall on test set: 99.29%/94.36%
+	
+4. 
+	
+	win:32x64=>15x32,cell:5x5
+	Optimization finished (942 misclassified, maxdiff=0.00092).
+	Runtime in cpu-seconds: 22.83
+	Number of SV: 5163 (including 4985 at upper bound)
+	L1 loss: loss=3062.10321
+	Norm of weight vector: |w|=10.03162
+	Norm of longest example vector: |x|=3.12244
+	Estimated VCdim of classifier: VCdim<=982.13819
+	Computing XiAlpha-estimates...done
+	Runtime for XiAlpha-estimates in cpu-seconds: 0.08
+	XiAlpha-estimate of the error: error<=4.16% (rho=1.00,depth=0)
+	XiAlpha-estimate of the recall: recall=>87.40% (rho=1.00,depth=0)
+	XiAlpha-estimate of the precision: precision=>90.45% (rho=1.00,depth=0)
+	Number of kernel evaluations: 622584
+	
+	Accuracy on test set: 98.22% (27495 correct, 499 incorrect, 27994 total)
+	Precision/recall on test set: 97.22%/94.30%
